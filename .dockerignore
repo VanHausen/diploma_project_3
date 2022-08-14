@@ -1,0 +1,8 @@
+env/
+README.md
+docker-compose.yaml
+.gitignore
+.python-version
+app.db
+.env
+postgres-data
