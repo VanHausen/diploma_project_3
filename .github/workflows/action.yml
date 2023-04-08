@@ -33,7 +33,7 @@ jobs:
       - name: clone files to server
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "deploy/docker-compose.yaml,deploy/.env"
@@ -42,7 +42,7 @@ jobs:
       - name: run docker-compose
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
