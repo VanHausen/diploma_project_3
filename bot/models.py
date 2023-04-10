@@ -6,8 +6,8 @@ CODE_VOCABULARY = "qwertyuasdfghkzxvbnm123456789"
 
 
 class TgUser(models.Model):
-    tg_id = models.BigIntegerField(verbose_name="tg id", unique=True)
-    tg_chat_id = models.BigIntegerField(verbose_name="tg chat id")
+    chat_id = models.BigIntegerField(verbose_name="tg id", unique=True)
+#    tg_chat_id = models.BigIntegerField(verbose_name="tg chat id")
     username = models.CharField(
         max_length=512, verbose_name="tg username", null=True, blank=True, default=None
     )
@@ -20,7 +20,10 @@ class TgUser(models.Model):
         verbose_name="связанный пользователь",
     )
     verification_code = models.CharField(
-        max_length=32, verbose_name="код подтверждения"
+        max_length=32,
+        verbose_name="код подтверждения",
+        blank=True,
+        default=None
     )
 
     class Meta:
