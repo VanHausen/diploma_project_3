@@ -15,7 +15,7 @@ class Command(BaseCommand):
         super().__init__(*args, **kwargs)
         self.tg_client = TgClient(settings.BOT_TOKEN)
 
-    def handle(self, *args, **kwargs):
+    def handle(self, *args, **options):
         offset = 0
 
         logger.info('Bot start handling')
@@ -27,10 +27,10 @@ class Command(BaseCommand):
 
 
     def handle_user_without_verification(self, msg: Message, tg_user: TgUser):
-        self.tg_client.send_message(tg_user.tg_id, 'Heloo!')
+        self.tg_client.send_message(tg_user.chat_id, 'Heloo!')
 
         code = tg_user.set_verification_code()
-        self.tg_client.send_message(tg_user.tg_id, f'verification code: {code}')
+        self.tg_client.send_message(tg_user.chat_id, f'verification code: {code}')
 
 
     def fetch_tasks(self, msg: Message, tg_user: TgUser):
