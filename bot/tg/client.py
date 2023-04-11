@@ -14,7 +14,7 @@ class Command(str, Enum):
 class TgClient:
     def __init__(self, token: str | None = None):
         self.token = token if token else settings.BOT_TOKEN
-        self.logger = logging.getLogger(__name__)
+    #     self.logger = logging.getLogger(__name__)
 
     def get_url(self, method: str) -> str:
         return f"https://api.telegram.org/bot{self.token}/{method}"
@@ -30,7 +30,7 @@ class TgClient:
     def _get(self, command: Command, **params) -> dict:
         url = self.get_url(command)
         resp = requests.get(url, params=params)
+        print(resp.status_code, resp.json())
         if not resp.ok:
-            print(resp.json())
             raise ValueError
         return resp.json()

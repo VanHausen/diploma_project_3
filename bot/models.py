@@ -2,28 +2,27 @@ import random
 
 from django.db import models
 
+from core.models import User
+
 CODE_VOCABULARY = "qwertyuasdfghkzxvbnm123456789"
 
 
 class TgUser(models.Model):
-    chat_id = models.BigIntegerField(verbose_name="tg id", unique=True)
-#    tg_chat_id = models.BigIntegerField(verbose_name="tg chat id")
-    username = models.CharField(
-        max_length=512, verbose_name="tg username", null=True, blank=True, default=None
-    )
+    tg_id = models.BigIntegerField(verbose_name="tg id", unique=True)
+    #tg_chat_id = models.BigIntegerField(verbose_name="tg chat id")
+    #username = models.CharField(
+    #    max_length=512, verbose_name="tg username", null=True, blank=True, default=None
+    #)
     user = models.ForeignKey(
-        "core.User",
-        models.PROTECT,
+        User,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         default=None,
         verbose_name="связанный пользователь",
     )
     verification_code = models.CharField(
-        max_length=32,
-        verbose_name="код подтверждения",
-        blank=True,
-        default=None
+        max_length=50, null=True, blank=True, default=None, verbose_name="код подтверждения"
     )
 
     class Meta:
