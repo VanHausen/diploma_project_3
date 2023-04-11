@@ -54,7 +54,7 @@ class Command(BaseCommand):
             tg_id=msg.from_.id,
             defaults={
                 "tg_chat_id": msg.chat.id,
-                #"username": msg.from_.username,
+                "username": msg.from_.username,
             },
         )
         if tg_user.user:
