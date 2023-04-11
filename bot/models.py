@@ -1,4 +1,4 @@
-import random
+import os
 
 from django.db import models
 
@@ -8,27 +8,20 @@ CODE_VOCABULARY = "qwertyuasdfghkzxvbnm123456789"
 
 
 class TgUser(models.Model):
-    tg_id = models.BigIntegerField(verbose_name="tg id", unique=True)
-    #tg_chat_id = models.BigIntegerField(verbose_name="tg chat id")
-    #username = models.CharField(
-    #    max_length=512, verbose_name="tg username", null=True, blank=True, default=None
-    #)
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        default=None,
-        verbose_name="связанный пользователь",
-    )
-    verification_code = models.CharField(
-        max_length=50, null=True, blank=True, default=None, verbose_name="код подтверждения"
-    )
+    chat_id = models.BigIntegerField(unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    verification_code = models.CharField(max_length=50, null=True, blank=True, default=None)
 
     class Meta:
         verbose_name = "tg пользователь"
         verbose_name_plural = "tg пользователи"
 
+    @staticmethod
+    def _generate_verification_code() -> str:
+        return os.urandom(12).hex()
+
     def set_verification_code(self):
-        code = "".join([random.choice(CODE_VOCABULARY) for _ in range(12)])
+        code = self._generate_verification_code()
         self.verification_code = code
+        self.save(update_fields=("verification_code",))
+        return code

@@ -1,7 +1,6 @@
-from venv import logger
-
 from django.conf import settings
 from django.core.management import BaseCommand
+from logger import logger
 
 from bot.models import TgUser
 from bot.tg.client import TgClient
@@ -16,7 +15,7 @@ class Command(BaseCommand):
         super().__init__(*args, **kwargs)
         self.tg_client = TgClient(settings.BOT_TOKEN)
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **kwargs):
         offset = 0
 
         logger.info('Bot start handling')
@@ -28,11 +27,11 @@ class Command(BaseCommand):
 
 
     def handle_user_without_verification(self, msg: Message, tg_user: TgUser):
-        tg_user.set_verification_code()
-        tg_user.save(update_fields=["verification_code"])
-        self.tg_client.send_message(
-            msg.chat.id, f"[verification code] {tg_user.verification_code}"
-        )
+        self.tg_client.send_message(tg_user.tg_id, 'Heloo!')
+
+        code = tg_user.set_verification_code()
+        self.tg_client.send_message(tg_user.tg_id, f'verification code: {code}')
+
 
     def fetch_tasks(self, msg: Message, tg_user: TgUser):
         gls = Goal.objects.filter(user=tg_user.user)
