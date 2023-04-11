@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
 
     def handle_user_without_verification(self, msg: Message, tg_user: TgUser):
-        self.tg_client.send_message(tg_user.chat_id, 'Heloo!')
+        self.tg_client.send_message(tg_user.chat_id, 'Hello!')
 
         code = tg_user.set_verification_code()
         self.tg_client.send_message(tg_user.chat_id, f'verification code: {code}')
