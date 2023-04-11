@@ -24,13 +24,13 @@ class TgClient:
         return GetUpdatesResponse(**data)
 
     def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
-        data = self._get(Command.SET_MESSAGE, chat_id=chat_id, text=text)
+        data = self._get(Command.SEND_MESSAGE, chat_id=chat_id, text=text)
         return SendMessageResponse(**data)
 
     def _get(self, command: Command, **params) -> dict:
         url = self.get_url(command)
         resp = requests.get(url, params=params)
-        print(resp.status_code, resp.json())
         if not resp.ok:
+            print(resp.json())
             raise ValueError
         return resp.json()

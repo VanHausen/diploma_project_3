@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "social_django",
+    'users.apps.UsersConfig', # new
 ]
 APPS = ["core", "goals", "bot", "drf_yasg"]
 INSTALLED_APPS += APPS

@@ -1,10 +1,9 @@
 import os
 
 from django.db import models
-
 from core.models import User
 
-CODE_VOCABULARY = "qwertyuasdfghkzxvbnm123456789"
+#CODE_VOCABULARY = "qwertyuasdfghkzxvbnm123456789"
 
 
 class TgUser(models.Model):
@@ -15,6 +14,10 @@ class TgUser(models.Model):
     class Meta:
         verbose_name = "tg пользователь"
         verbose_name_plural = "tg пользователи"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+        self.id = None
 
     @staticmethod
     def _generate_verification_code() -> str:
