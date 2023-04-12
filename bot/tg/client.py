@@ -2,6 +2,7 @@ import logging
 from enum import Enum
 
 import requests
+import resp as resp
 from django.conf import settings
 
 from bot.tg.dc import GetUpdatesResponse, SendMessageResponse
@@ -19,13 +20,23 @@ class TgClient:
     def get_url(self, method: str) -> str:
         return f"https://api.telegram.org/bot{self.token}/{method}"
 
+#    def get_updates(self, offset: int = 0, timeout: int = 60) -> GetUpdatesResponse:
+#        data = self._get(Command.GET_UPDATES, offset=offset, timeout=timeout)
+#        return GetUpdatesResponse.Schema().load(data.json())
+#
+#    def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
+#        data = self._get(Command.SEND_MESSAGE, chat_id=chat_id, text=text)
+#        return SendMessageResponse.Schema().load(data.json())
+
     def get_updates(self, offset: int = 0, timeout: int = 60) -> GetUpdatesResponse:
-        data = self._get(Command.GET_UPDATES, offset=offset, timeout=timeout)
-        return GetUpdatesResponse(**data)
+        url = self.get_url("getUpdates")
+        resp = requests.get(url, params={"offset": offset, "timeout": timeout})
+        return GetUpdatesResponse.Schema().load(resp.json())
 
     def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
-        data = self._get(Command.SEND_MESSAGE, chat_id=chat_id, text=text)
-        return SendMessageResponse(**data)
+        url = self.get_url("sendMessage")
+        resp = requests.post(url, json={"chat_id": chat_id, "text": text})
+        return SendMessageResponse.Schema().load(resp.json())
 
     def _get(self, command: Command, **params) -> dict:
         url = self.get_url(command)
