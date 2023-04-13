@@ -19,7 +19,7 @@ class TgUserSerializer(serializers.ModelSerializer):
         try:
           self.tg_user = TgUser.objects.get(verification_code=code)
         except TgUser.DoesNotExist:
-            raise ValidationError("field is incorrect")
+            raise ValidationError("Field is incorrect")
         return code
 
     def update(self, instance: TgUser, validated_data: dict):
