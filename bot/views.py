@@ -1,6 +1,5 @@
-from django.conf import settings
-from rest_framework import permissions
 from rest_framework.generics import GenericAPIView
+from rest_framework import permissions
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -21,6 +20,6 @@ class VerificationView(GenericAPIView):
         s.tg_user.user = self.request.user
         s.tg_user.save()
 
-        TgClient.send_message(s.tg_user.chat_id, "[verification has been completed]")
+        TgClient.send_message(s.tg_user.chat_id, "verification has been completed")
 
         return Response(self.get_serializer(s.tg_user).data)

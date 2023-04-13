@@ -160,8 +160,8 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            "class": "logging.StreamHandler",
-            "formatter": "console",
+            'class': 'logging.StreamHandler',
+            'formatter': 'console',
         },
         'null': {'class': 'logging.NullHandler'},
     },
