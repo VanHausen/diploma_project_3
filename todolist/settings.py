@@ -43,11 +43,11 @@ INSTALLED_APPS = [
     "social_django",
 #    'users.apps.UsersConfig', # new
 ]
+
 if DEBUG:
     INSTALLED_APPS += ['django_extension', ]
 
 
-# КОНЕЦ
 APPS = ["core", "goals", "bot", "drf_yasg"]
 INSTALLED_APPS += APPS
 
