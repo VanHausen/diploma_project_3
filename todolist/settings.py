@@ -43,6 +43,11 @@ INSTALLED_APPS = [
     "social_django",
 #    'users.apps.UsersConfig', # new
 ]
+if DEBUG:
+    INSTALLED_APPS += ['django_extension', ]
+
+
+# КОНЕЦ
 APPS = ["core", "goals", "bot", "drf_yasg"]
 INSTALLED_APPS += APPS
 
@@ -148,7 +153,7 @@ STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-BOT_TOKEN = env("BOT_TOKEN")
+BOT_TOKEN = env.str('BOT_TOKEN')
 
 LOGGING = {
     'version': 1,
