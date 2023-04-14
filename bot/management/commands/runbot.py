@@ -1,3 +1,4 @@
+
 from django.core.management import BaseCommand
 from django.template.base import logger
 
@@ -38,9 +39,6 @@ class Command(BaseCommand):
 
     def handle_authorized(self, tg_user: TgUser, msg: Message):
         logger.info('AUTHORIZED')
-
-
-
 
 
 
