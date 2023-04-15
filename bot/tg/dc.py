@@ -1,14 +1,19 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
+
+class MessageFrom(BaseModel):
+    id: int
+    username: str | None = None
 
 class Chat(BaseModel):
     id: int
-
+    username: str | None = None
 
 class Message(BaseModel):
-    chat: Chat
+    message_id: int
+    from_: MessageFrom = Field(..., alias='from')
+    chat=Chat
     text: str | None = None
-
 
 class UpdateObj:
     update_id: int
@@ -22,4 +27,7 @@ class SendMessageResponse(BaseModel):
 
 class GetUpdatesResponse(BaseModel):
     ok: bool
-    result: list[UpdateObj]
+    result: list[UpdateObj] = []
+
+    class Config:
+        arbitrary_types_allowed = True

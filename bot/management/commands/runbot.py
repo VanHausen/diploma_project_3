@@ -1,46 +1,78 @@
+import logging
 
 from django.core.management import BaseCommand
-from django.template.base import logger
 
 from bot.models import TgUser
 from bot.tg.client import TgClient
 from bot.tg.dc import Message
+from todolist import settings
 
 
 class Command(BaseCommand):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.tg_client = TgClient()
+        super().__init__()
+        self.tg_client = TgClient(token=settings.BOT_TOKEN)
+        self._tg_user: TgUser | None = None
+        self.logger = logging.getLogger(__name__)
+        self.logger.info('Bot start pooling')
+
+    @property
+    def tg_user(self) -> TgUser:
+        if self.__tg_user:
+            return self.__tg_user
+        raise RuntimeError("User doesn-t Exist")
 
     def handle(self, *args, **options):
         offset = 0
-
-        logger.info('Bot start handling')
         while True:
             res = self.tg_client.get_updates(offset=offset)
             for item in res.result:
                 offset = item.update_id + 1
-                self.handle_message(item.message)
 
-    def handle_message(self, msg: Message):
-        tg_user, created = TgUser.objects.get_or_create(chat_id=msg.chat.id)
+                self.__tg_user, _ = TgUser.objects.get_or_create(
+                    chat_id=item.message.chat.id,
+                    defaults={'username': item.message.from_.username}
+                )
+                if self.tg_user.user_id:
+                    self.handle_authorized(item.message)
+                else:
+                    self._handle_unauthorized(item.message)
 
-        if tg_user.user:
-            self.handle_authorized(tg_user, msg)
+    def _handle_unauthorized(self, message: Message):
+        verification_code: str = self.tg_user.set_verification_code()
+        self.tg_client.send_message(
+            chat_id=message.chat.id,
+            text=f"Verification code {verification_code}"
+        )
+
+    def handle_authorized(self, message: Message):
+        self.logger.info('AUTHORIZED')
+        if message.text.startswith('/'):
+            self._handle_unauthorized(message)
         else:
-            self.handle_unauthorized(tg_user, msg)
+            self.__handle_message(message)
 
-    def handle_unauthorized(self, tg_user: TgUser, msg: Message):
-        self.tg_client.send_message(msg.chat.id, "HELLO!!!")
+    def _handle_command(self, message: Message):
+        match message.text:
+            case '/goals':
+                self._handle_goals_command(message)
+            case _:
+                raise NotImplementedError
 
-        code = tg_user.set_verification_code()
-        self.tg_client.send_message(tg_user.chat_id, f'verification code: {code}')
+    def __handle_message(self, message: Message):
+        self.logger.info(f'user send: {message.text}')
 
-    def handle_authorized(self, tg_user: TgUser, msg: Message):
-        logger.info('AUTHORIZED')
-
-
+    def _handle_goals_command(self, message: Message):
+        from goals.models import Goal
+        goals: list[str] = list(
+            Goal.objects.filter(user_id=self.tg_user.user_id)
+            .exclude(status=Goal.Status.archived).values_list("title", flat=True)
+        )
+        self.tg_client.send_message(
+            chat_id=message.chat.id,
+            text='\n'.join(goals) if goals else 'No goals found'
+        )
 
 
 

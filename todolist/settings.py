@@ -41,15 +41,15 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "social_django",
+    "core",
+    "goals",
+    "bot",
+    "drf_yasg",
 #    'users.apps.UsersConfig', # new
 ]
 
 if DEBUG:
     INSTALLED_APPS += ['django_extension', ]
-
-
-APPS = ["core", "goals", "bot", "drf_yasg"]
-INSTALLED_APPS += APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -105,6 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 AUTH_USER_MODEL = "core.User"
+
 AUTHENTICATION_BACKENDS = (
     "social_core.backends.vk.VKOAuth2",
     "django.contrib.auth.backends.ModelBackend",
